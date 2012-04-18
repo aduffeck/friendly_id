@@ -31,7 +31,7 @@ module FriendlyId
 
           slugged_tables.each do |table_name|
             add_column table_name, :slug, :string
-            add_index  table_name, :slug, :unique => true
+            add_index  table_name, :slug
           end
 
           # This will be used to test scopes
@@ -54,17 +54,20 @@ module FriendlyId
           # This will be used to test globalize translations
           TranslatedArticle.create_translation_table! :slug => :string, :title => :string
 
+          # Used to test :scoped and :history together
+          add_column :restaurants, :city_id, :integer
+
           @done = true
         end
 
         private
 
         def slugged_tables
-          ["journalists", "articles", "novelists", "novels", "manuals", "translated_articles"]
+          ["journalists", "articles", "novelists", "novels", "manuals", "translated_articles", "restaurants"]
         end
 
         def simple_tables
-          ["authors", "books", "publishers"]
+          ["authors", "books", "publishers", "cities"]
         end
 
         def tables

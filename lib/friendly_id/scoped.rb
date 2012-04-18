@@ -138,7 +138,15 @@ an example of one way to set this up:
       def conflict
         columns = friendly_id_config.scope_columns
         matched = columns.inject(conflicts) do |memo, column|
-           memo.where(column => sluggable.send(column))
+          value = sluggable.send(column)
+
+          # When using the :history module +conflicts+ doesn't give us the actual records but the according Slugs, so we
+          # have to follow the indirection first in order to compare the scope
+          if memo.klass == Slug
+            memo.select { |m| m.sluggable.send(column) == value }
+          else
+            memo.where(column => value)
+          end
         end
 
         matched.first
